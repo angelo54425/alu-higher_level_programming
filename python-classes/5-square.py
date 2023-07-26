@@ -3,16 +3,23 @@
 
 
 class Square:
+    """
+    Create a square
+        Has a private Instance att: size
+    """
 
     def __init__(self, size=0):
+        """ init size """
         self.__size = size
 
     @property
     def size(self):
+        """ returns the size att """
         return self.__size
 
     @size.setter
     def size(self, value):
+        """ asign the size to the size att """
         if(type(value) is not int):
             raise TypeError("size must be an integer")
         if(value < 0):
