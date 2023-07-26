@@ -2,7 +2,5 @@
 """Create an Empty Square """
 
 class Square:
+    """Create a square class object"""
     pass
-    """
-    creates a square class object
-    """
