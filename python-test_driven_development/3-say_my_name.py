@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""
-function that prints both of your names
-"""
+"""Module Documentation"""
 
 
 def say_my_name(first_name, last_name=""):
