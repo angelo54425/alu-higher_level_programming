@@ -1,50 +1,20 @@
 #!/usr/bin/node
-
 const request = require('request');
+const address = 'https://swapi.co/api/films/' + process.argv[2];
 
-if (process.argv.length > 2) {
-  const movieId = process.argv[2];
-  const apiUrl = `https://swapi.dev/api/films/${movieId}/`;
-
-  request.get(apiUrl, (error, response, body) => {
-    if (error) {
-      console.error(`An error occurred while making the request: ${error}`);
-      return;
+request(address, function (error, response, body) {
+  if (error) {
+    console.log(error);
+  } else {
+    let results = JSON.parse(body).characters;
+    let promises = [];
+    for (let i of results) {
+      promises.push(new Promise(function (resolve, reject) {
+        request(i, (e, r, b) => resolve(JSON.parse(b)['name']));
+      }));
     }
-
-    if (response.statusCode !== 200) {
-      console.error(`Error: ${response.statusCode} - ${response.statusMessage}`);
-      return;
-    }
-
-    try {
-      const movie = JSON.parse(body);
-      const charactersUrls = movie.characters;
-
-      const printCharacters = (urls, index = 0) => {
-        if (index >= urls.length) {
-          return;
-        }
-
-        request.get(urls[index], (error, response, body) => {
-          if (error) {
-            console.error(`An error occurred while making the request: ${error}`);
-          } else if (response.statusCode !== 200) {
-            console.error(`Error: ${response.statusCode} - ${response.statusMessage}`);
-          } else {
-            const character = JSON.parse(body);
-            console.log(character.name);
-          }
-
-          printCharacters(urls, index + 1);
-        });
-      };
-
-      printCharacters(charactersUrls);
-    } catch (error) {
-      console.error(`An error occurred while parsing the response: ${error}`);
-    }
-  });
-} else {
-  console.log('Please provide the Movie ID as an argument.');
-}
+    Promise.all(promises).then((a) => {
+      for (let i of a) { console.log(i); }
+    });
+  }
+});
